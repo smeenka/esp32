@@ -11,7 +11,7 @@ The version presented here is my version, with no pretentions that it is better 
 
 That said lets proceed:
 
-The whole cooperative OS is in one file (usyncio) and consists of 460 lines of code!
+The whole cooperative OS is in one file (asyncio) and consists of 460 lines of code!
 
 Whats in here:
 
