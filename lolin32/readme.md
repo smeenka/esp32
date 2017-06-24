@@ -7,7 +7,7 @@ Content:
 
 The content of the lolin32 directory should be uploaded to a device.
 
-This can be done for example with filemanager konquerer on ubuntu, and the lolin32 board running the ftpserver.
+This can be done for example with filemanager krusader on ubuntu, and the lolin32 board running the ftpserver.
 
 ## main.py
 

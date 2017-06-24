@@ -71,7 +71,7 @@ How to use:
 
 Assumed here is that the uftpserver module is a frozen module in the firmware.
 
-If your firmware does not contain a frozen uftpserver module, place the while content of the file as a snippet (see lolin32/lig/uftpserver)
+If your firmware does not contain a frozen uftpserver module, place the while content of the file as a snippet (see lolin32/lib/uftpserver)
 
 
 
