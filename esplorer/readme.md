@@ -31,9 +31,9 @@ So I build my own variant of the tool, based on checkout:
 
 This variant in this directory does add a fixed waittime for upload of 5 ms.
 
-Use  button <Send to ESP>. This button will load the file in memory in the lolin32
+Use  button *Send to ESP*. This button will load the file in memory in the lolin32
 
-Do not use button <Save to ESP>. This is not functional.
+Do not use button *Save to ESP*. This is not functional.
 
 How to use:
 
