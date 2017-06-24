@@ -39,7 +39,7 @@ How to use:
 
 * place the 2 files in this directory in ~/bin
 * start with esplorer.sh
-* Use snippets and button <Send to ESP>
+* Use snippets and button *Send to ESP*
 
 
 ## Snippet: connect to an AP
