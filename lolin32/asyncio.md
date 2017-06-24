@@ -51,6 +51,7 @@ Example of a generator:
 
 	def foo():
 	    fooc = 0
+	    yield
 	    while fooc < 25:
 	        log.info ("I'm foo %d",fooc)
 	        fooc += 1
