@@ -28,10 +28,11 @@ Every application, not started from main.py should add /lib to the system path
 
 All modules in the library are functional.
 
-The http_server though is not fully funcional. Work to do is to better integrate the server with the asyncio operation system.
+The http_server though is not fully funcional. TODO is better ingegration of the server in the asyncio operationg system.
 
-The server is functional but one gets sometimes often OS errors.
-In the browser one has to press sometimes F5 to get the result.
+One get occasionaly  OS errors.
+
+In the browser one has to press F5 to get the result.
 
 # Unit test of the library: best way to begin!
 
