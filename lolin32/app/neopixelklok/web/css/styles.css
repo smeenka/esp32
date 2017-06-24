@@ -1,0 +1,111 @@
+html, body {
+  height: 90%;
+
+  background: #222;
+   margin: 0px 0px 0px 10px;
+   //background:radial-gradient(at 40% 30%, #4a98d3, #00598f);
+}
+
+
+.site-header{
+    width:98%;
+    min-height: 50px;
+    background:radial-gradient(at 40% 30%, #4a98d3, #00598f);
+}
+
+.header  {
+  display: block;
+  clear: both;
+  padding:10px 10px 10px 40px;
+  list-style: none;
+  display: block;
+  line-height: 50px;       /* the same as your div height */
+}
+
+.table-header{
+    display:block;
+    width:100%;
+}
+.table-header td{
+     padding:0px 20px 0px 20px;
+    text-align: left;
+}
+.button {
+
+    height:30px;
+    padding: 0px 10px 10px 10px;
+    font: 20px sans-serif;
+    text-decoration: none;
+    color: #CCC;
+    border-radius:10px;
+
+  background-color:#67a0cf;
+  border:1px outset #ccc;
+
+  padding:4px 3px 3px 10px;
+  text-decoration:none;
+}
+.button:hover {
+  background-color:#5788af;
+}
+.button:active {
+  background-color:#67b4cf;
+  border:1px inset #303030;
+}
+
+/*----- Tabs -----*/
+.tabs {
+    width:98%;
+    display:block;
+    min-height: 80%;
+    padding:0px 0px 0px 0px;
+    border-radius:5px;
+    background:radial-gradient(at 40% 30%, #4a98d3, #00598f);
+}
+.tab-links li {
+    margin:0px 5px;
+    float:left;
+    list-style:none;
+}
+
+.tab-links a {
+    padding:9px 15px;
+    display:inline-block;
+    border-radius:5px 5px 0px 0px;
+    background:#7FB5DA;
+    font-size:16px;
+    font-weight:600;
+    color:#4c4c4c;
+    transition:all linear 0.45s;
+}
+
+.tab-links a:hover {
+    background:#a7cce5;
+    text-decoration:none;
+}
+
+li.active a, li.active a:hover {
+    background:#CCC;
+    color:#4c4c4C;
+}
+
+/*----- Content of Tabs -----*/
+.tab-content{
+    clear:left;
+    margin: 0px 10px 10px 10px;
+    padding:25px;
+    border-radius:5px;
+    box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+    background:#ccc;
+    display:block;
+
+}
+
+.tab {
+    display:none;
+}
+
+.tab.active {
+    display:block;
+}
+

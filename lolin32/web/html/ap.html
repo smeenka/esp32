@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html data-ng-app='app'>
+<head>
+    <!--meta http-equiv='refresh' content='5'-->
+    <title >Neopixel Klok AP</title>
+    <meta charset='utf-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge, chrome=1' />
+    <link href='/css/styles.css' rel='stylesheet' />
+</head>
+<body>
+
+    <header class='site-header'>
+        <div class = 'header'>
+            <div class='header-text'>
+            <table class ='table-header'><tr>
+#time           <td id ='label_now' class='current_time'>%s<td/>
+            </tr>
+            </table>
+            </div>
+         </div>
+    </header>
+
+
+    <div class='tabs'>
+        <ul class='tab-links'>
+            <li><a href='#tab_ap'>Access Point</a></li>
+        </ul>
+
+        <div class='tab-content'>
+            <div id='tab_ap' class='tab active'>
+                  <br>
+                  Vraag een lijst op van aanwezig WIFI access points (AP) in de buurt<br>
+                  Het opvragen kan enkele seconden duren ...<br><br><br>
+                  <a href="/aplist.html">
+                        <button id='sync' class='button' type='button'>Opvragen WIFI access points</button>
+                  </a>  
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html data-ng-app='app'>
+<head>
+    <!--meta http-equiv='refresh' content='5'-->
+    <style>
+    </style>
+    <title data-ng-bind='title'>Neopixel Klok</title>
+    <meta charset='utf-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge, chrome=1' />
+    <link href='/css/styles.css' rel='stylesheet' />
+    <script src='https://code.jquery.com/jquery-latest.min.js'></script>
+<script>
+jQuery(document).ready(function() {
+console.log(' document ready');
+
+
+
+jQuery('.tabs .tab-links a').on('click', function(e)  {
+    var currentAttrValue = jQuery(this).attr('href');
+
+    console.log(' tabs .tab-links on click ' +  currentAttrValue);
+
+    // Show/Hide Tabs
+    jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
+
+    // Change/remove current tab to active
+    jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+
+    e.preventDefault();
+
+});
+jQuery('#sync').on('click', function(e)  {
+    var now = new Date();
+    var sendTime = {
+      hour: now.getHours(),
+      minute:now.getMinutes(),
+      second:now.getSeconds()
+    }
+    t = JSON.stringify(sendTime)
+    console.log('Sync clicked pc time: %s'%t);
+    $.post('/time/set',t )
+});
+jQuery('#gettime').on('click', function(e)  {
+    console.log('gettime clicked ');
+    askTime();
+});
+jQuery('#input_brightness').on('change', function(e)  {
+    var value = { v: $('#input_brightness').val() }
+    $.post('/settings/brightness',JSON.stringify(value) )
+});
+jQuery('#input_offset').on('change', function(e)  {
+    var value = { v: $('#input_offset').val() }
+    $.post('/settings/offset',JSON.stringify(value) )
+});
+jQuery('#input_quarters').on('change', function(e)  {
+    var value = { v: $('#input_quarters').val() }
+    $.post('/settings/quarters',JSON.stringify(value) )
+});
+jQuery('#mode_pixel').on('click', function(e)  {
+    console.log('mode pixel clicked ');
+     i = $('#input_I').val(); 
+     r = $('#input_R').val(); 
+     g = $('#input_G').val();
+     b = $('#input_B').val();
+    $.get("mode/pixel",{i:i,r:r,g:g,b:b});
+});
+jQuery('#mode_color').on('click', function(e)  {
+    console.log('mode color clicked ');
+     i = $('#input_I').val(); 
+     r = $('#input_R').val(); 
+     g = $('#input_G').val();
+     b = $('#input_B').val();
+    $.get("mode/color",{r:r,g:g,b:b});
+});
+jQuery('#mode_klok').on('click', function(e)  {
+    console.log('mode klok clicked ');
+    $.get("mode/klok");
+});
+jQuery('#mode_rainbow').on('click', function(e)  {
+    console.log('mode rainbow clicked ');
+    $.get("mode/rainbow");
+});
+
+
+
+var askTime = function () {
+    $.ajax({
+        url: '/time/get',
+        success: function(data, status, xhdr)
+                {
+                    jQuery('#label_now').text ( data.hour + ':' + data.minute+':'+ data.second );
+                },
+        dataType: 'json'
+    }).fail( function(xhr, status, error) {
+        console.log("An AJAX error occured: " + status + "\nError: " + error + "\nError detail: " + xhr.responseText);
+    });
+}
+var t = setInterval(askTime,1000);
+
+});
+</script>
+</head>
+<body>
+
+    <header class='site-header'>
+        <div class = 'header'>
+            <div class='header-text'>
+            <table class ='table-header'><tr>
+                <td>Klok tijd:  </td>
+                <td id ='label_now' class='current_time'>00h 00m 00s<//td>
+                <td >
+                    <button id='sync' class='button' type='button'>Sync met PC</button>
+                </td>
+            </tr></table>
+            </div>
+         </div>
+    </header>
+
+
+    <div class='tabs'>
+        <ul class='tab-links'>
+            <li><a href='#tab_ap'>Access Point</a></li>
+            <li class='active'><a href='#tab_wifi'>WiFi</a></li>
+            <li><a href='#tab_effects'>Effecten</a></li>
+            <li ><a href='#tab_settings'>Settings</a></li>
+        </ul>
+
+        <div class='tab-content'>
+            <div id='tab_ap' class='tab'>
+                  <br>
+                  Vraag een lijst op van aanwezig WIFI access points (AP) in de buurt<br>
+                  Het opvragen kan enkele seconden duren ...<br><br><br>
+                  <a href="/aplist.html">
+                        <button id='sync' class='button' type='button'>Opvragen WIFI access points</button>
+                  </a>  
+            </div>
+            <div id='tab_wifi' class='tab active '>
+                <div>
+                <table class ='table-header'>
+
+                    <tr>
+                        <td>bootcount:</td>
+#bootcount              <td>%s<td/>
+                    </tr>
+                    <tr>
+                        <td>wifi status:</td>
+#status                   <td>%s<td/>
+                    </tr>
+                    <tr>
+                        <td>ip adres:</td>
+#ip                        <td>%s<td/>
+                    </tr>
+
+                </table>
+                </div>
+                <div>
+                </div>
+
+            </div>
+
+
+            <div id='tab_effects' class='tab '>
+                <table class ='table-header'>
+                    <tr>
+                        <td>R</td>
+<td><input id='input_R' type='range' name='points' min='0' max='255' value='100'><td/>
+                    </tr>
+                    <tr>
+                        <td>G</td>
+<td><input id='input_G' type='range' name='points' min='0' max='255' value='100'><td/>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+<td><input id='input_B' type='range' name='points' min='0' max='255' value='100'><td/>
+                    </tr>
+                    <tr>
+                        <td>Index</td>
+<td><input id='input_I' type='range' name='points' min='0' max='59' value='0'><td/>
+                    </tr>
+                <tr>    
+                <td >
+                    <button id='mode_klok' class='button' type='button'>Klok Modus</button>
+                </td>
+                <td >
+                    <button id='mode_color' class='button' type='button'>Kleur Modus</button>
+                </td>
+                <td >
+                    <button id='mode_pixel' class='button' type='button'>Pixel Modus</button>
+                </td>
+                <td >
+                    <button id='mode_rainbow' class='button' type='button'>Rainbow Modus</button>
+                </td>
+                </tr>
+                </table>
+            </div>
+
+            <div id='tab_settings' class='tab' >
+                <table class ='table-header'>
+                    <tr>
+                        <td>Helderheid</td>
+#brightness  <td><input id='input_brightness' type='range' name='points' min='1' max='50' value='%s'><td/>
+                    </tr>
+                    <tr>
+                        <td>Kwartieren</td>
+#quarters    <td><input id='input_quarters' type='range' name='points' min='0' max='59' value='%s'><td/>
+                    </tr>
+                    <tr>
+                        <td>Rotatie offset</td>
+#offset      <td><input id='input_offset' type='range' name='points' min='0' max='59' value='%s'><td/>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>
+
+
+
+
+
