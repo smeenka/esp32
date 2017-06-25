@@ -3,7 +3,6 @@
 ***
 
 * [Lolin32 board](lolin32/readme.md)
-* [esplorer](esplorer/readme.md)
 
 # A note about this repository
 ***
