@@ -29,18 +29,17 @@ So I build my own variant of the tool, based on checkout:
 	72385c47df65e8c10727d730f17132cda3551fb8 
 	Merge pull request #56 from oddstr13/ pr-autodetect-issue-41-fix Fixes 4refr0nt/ESPlorer#41
 
-This variant in this directory does add a fixed waittime for upload of 5 ms.
+The esplorer variant in this directory does add a fixed waittime for upload of 5 ms.
 
-Use  button *Send to ESP*. This button will load the file in memory in the lolin32
+Use  button *Send to ESP*. This button will load the file in memory in the lolin32.
 
-Do not use button *Save to ESP*. This is not functional.
+Do not use button *Save to ESP*. Saving a file is not functional as the waittime of 5 ms way to fast.
 
 How to use:
 
-* place the 2 files in this directory in ~/bin
+* copy the file esplorer.sh and ESPlorer.jar to ~/bin
+* assumes is that ~/bin is in your $PATH
 * start with esplorer.sh
-* Use snippets and button *Send to ESP*
-
 
 ## Snippet: connect to an AP
 
