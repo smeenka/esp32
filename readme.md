@@ -1,13 +1,10 @@
 
-# ESP32 library and tools
-***
-
 * [Lolin32 board](lolin32/readme.md)
 
 # A note about this repository
 ***
 
-This repository contains 
+This repository contains for the ESP32:
 * library's
 * stubs
 * unit tests for libs and asyncio
@@ -36,7 +33,7 @@ After resetting of the target device, main.py will:
 
 *  connect to an AP (wifi.connect2ap()) 
 *  Within a try except block an unit test or an app is started
-*  In case of an exception (or pressing <ctrl-c>) the ftpserver is started
+*  In case of an exception (or pressing *ctrl-C*) the ftpserver is started
 * In Sublime Text3 use plugin ftpsync
 * in the root of the lolin32 tree place file ftpsync.settings
 
