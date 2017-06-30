@@ -34,19 +34,18 @@ neo.brightness = 50
 
 def handleRoot(request):
     log.debug("handleRoot, getting list")
-    status = wifi.apList()
-    if status:
-        temp = {}
-        r = []
-        for n in status["networks"]:
-            log.debug("ssid:%s, channel:%s RSSI:%s",n[0],n[2],n[3])
-            ssid = n[0]
-            r.append( (ssid,ssid,n[2],n[3]) )
-        temp["@networks"]= r
-        temp["#ip"]  = status["ip"]
-        temp["#status"]= status["status"]
-    else:
-        log.warn("Timeout on waiting")  
+    aplist = wifi.wlan.scan()
+    temp = {}
+    r = []
+    for n in aplist:
+        ssid    = n[0].decode()
+        channel = n[2]
+        rssi    = n[3]
+        log.debug("ssid:%s, channel:%s RSSI:%s",ssid,channel,rssi)
+        r.append( (ssid,ssid,channel,rssi) )
+    temp["@networks"]= r
+    temp["#ip"]  = wifi.getIp()
+    temp["#status"]= "connected"
     request.sendFile("/html/aplist.html",templates = temp)
 
 

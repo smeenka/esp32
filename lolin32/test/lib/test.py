@@ -8,4 +8,5 @@ print("==== /test/lib/test.py")
 #import test_heapq
 #import test_logging
 #import test_pwm
-import test_wifi
+#import test_wifi
+import test_ftp

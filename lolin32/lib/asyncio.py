@@ -132,7 +132,7 @@ class Scheduler(object):
 
         
 
-    def mainloop(self):
+    def mainloop(self, stopOnError = False):
         while True:
             if self.ready:
                 # fix current millis, before start of task
@@ -155,15 +155,14 @@ class Scheduler(object):
                     result = None
                     try:
                         result = task.run()
-                    except OSError as e:
-                        tup = e.args
-                        log.warn("Task %s: OSError: %s %s ",task.name, e.__class__,tup)   
                     except StopIteration: 
                         self.exit(task)
                         continue  # do not reschedule current task
                     except Exception as e:
                         tup = e.args
                         log.warn("Task %s: Exception: %s %s ",task.name, e.__class__,tup)   
+                        if stopOnError:
+                            raise e
 
                     if result:
                         if isinstance (result,Streamer):

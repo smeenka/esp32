@@ -10,7 +10,7 @@ NOTSET   = const(0)
 
 class Logger:
 
-    level    = INFO
+    level    = DEBUG
     loggers  = {}
     level2string = ["NOT_SET","TRACE","DEBUG","INFO","WARN","ERROR"]
 
