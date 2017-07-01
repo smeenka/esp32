@@ -28,14 +28,43 @@ Every application, not started from main.py should add /lib to the system path
 
 All modules in the library are functional.
 
-The http_server though is not fully funcional. TODO is better ingegration of the server in the asyncio operationg system.
+asyncio:
+* supports waiting on streams with select
+* supports signaling
+* supports waiting and time related functions
 
-One get occasionaly  OS errors.
+asyncftp:
+* ftpserver as an asyncio task: can run concurrent aside a web server
+* supports only passive mode
 
-In the browser one has to press F5 to get the result.
+http_server:
+* fully async, embedded in asyncio
+* supporting concurrently muliple streams, multiple clients
+* supports POST (limited to 512 bytes, only tekst)
+* supports templating, single line and multiple line 
+* supports REST calls
+
+logging:
+* java log4j alike
+
+uftpserver:
+* synchronous ftp server
+* supports only passive mode
+
+config:
+* easy configuration for apps and unit tests
+* config file: settings.json
+* only one place in the file system contains config information (not checked in into git!)
+
+wifi:
+* contains references to ap and wlan objects
+* managing ssid and passwords with the help of config
+
+neopixels:
+* support for adding colors to existing color
+
 
 # Unit test of the library: best way to begin!
-
 
 Modify main.py such that:
 
@@ -51,3 +80,5 @@ Modify main.py such that:
 and modify in /test/lib/test.py such that the requested test is started.
 
 Connect a neopixel string with at least 4 pixels to pin 13 for some tests.	    
+
+Note that the test_httpserver is not yet adapted to the async way of working
