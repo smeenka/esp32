@@ -71,11 +71,11 @@ class HttpServer:
         log.info("Start listening")
         while True:
             try:
-                s = yield asyncio.StreamWait()
-                conn, clientaddr = s.accept()
+                yield asyncio.StreamWait()
+                conn, clientaddr = self.socket.accept()
                 #log.debug("Got a connection from %s " ,clientaddr)
                 if conn:
-                    conn.setblocking(True)
+                    conn.setblocking(False)
                     req = HttpRequest(conn,self.routes)
                     # handle request in a different task 
                     asyncio.sched.task( req.generator() )
@@ -90,6 +90,7 @@ class HttpServer:
                     log.warn("Exception:%s %s ",e.__class__,tup)
                     if sys.platform == "linux":
                         raise
+                    raise e    
 
 
 class HttpRequest:
@@ -101,11 +102,14 @@ class HttpRequest:
 
     def generator(self):    
         yield
-        yield asyncio.StreamReaderWriter(self.conn)
+        self.task = yield asyncio.GetTaskRef()
+        yield asyncio.StreamReader(self.conn)
+        log.trace("Creating http task:%s",self.task.name)
         try: 
-            conn   = self.conn
             routes = self.routes            
-
+            # only for the first line block
+            yield asyncio.StreamWait()
+            conn = self.conn
             line = conn.readline()
             line = line.decode() 
             if line == None or len(line) == 0:
@@ -130,14 +134,17 @@ class HttpRequest:
                      params[k] = v
 
             path = pathArray[0]    
+            if path == "":
+                path = "/"
             headers = {}
+            # Assume that the rest of the header lines did arrive too
+            # so the only wait here is due to the yield (less than a ms)
             line = conn.readline()
             while len(line) >2:
                 #k, v = line.split(":", 1)
-                #log.debug(line)
+                log.trace("%s %s",self.task.name,line)
                 line = conn.readline()
-
-            yield    
+                yield
 
             body = array.array('B')
 
@@ -148,12 +155,10 @@ class HttpRequest:
             
             if method == "POST":
                 log.trace ("Getting post body")
-                conn.setblocking(False)
+                yield asyncio.StreamWait()
                 body = conn.read(512)
-                while not body:
-                    body = conn.read(512) 
-                conn.setblocking(True) 
                 self.body = body.decode()
+
                 log.debug ("Body:%s", body)
 
                 for route  in routes["post"]:
@@ -162,19 +167,22 @@ class HttpRequest:
                     if self.path.startswith(path):
                         cb = route[1]
                         if cb:
-                            cb(self)
+                            yield from cb(self)
                         return
-                self.sendHeader(404)
-                self.sendContent("<h4>Sorry, no handler found for: %s!</h4>"%path) 
+                yield from self.sendHeader(404)
+                yield from self.sendContent("<h4>Sorry, no handler found for: %s!</h4>"%path) 
                 return      
+
+
             for route  in routes["exact"]:
                 path = route[0]
                 log.trace ("Testing exact route %s" , path)
                 if self.path == path:
                     cb = route[1]
                     if cb:
-                        cb(self)
+                        yield from cb(self)
                     return
+
 
             for route  in routes["ends"]:
                 path = route[0]
@@ -182,8 +190,9 @@ class HttpRequest:
                 if self.path.endswith(path):
                     cb = route[1]
                     if cb:
-                        cb(self)
+                        yield from cb(self)
                     return
+
 
             for route  in routes["begins"]:
                 path = route[0]
@@ -191,27 +200,28 @@ class HttpRequest:
                 if self.path.startswith(path):
                     cb = route[1]
                     if cb:
-                        cb(self)
+                        yield from cb(self)
                     return
-                   
+
             # request not handled, send 404        
             if self.conn:
                 self.sendHeader(404)
                 self.sendContent("<h4>Sorry, page not found: %s!</h4>"% path)        
 
-        except OSError as e:
-            tup = e.args
-            log.warn("handleRequest OSError: %s %s", e.__class__,tup)    
+        #except OSError as e:
+        #    tup = e.args
+        #    log.warn("handleRequest OSError: %s %s", e.__class__,tup)  
+
         finally:
             conn.close()     
 
 
     def sendOk(self):
-        self.sendHeader(200)
+        yield from self.sendHeader(200)
 
     def send(self,status, content_type,content):
         """ status is html status (200) etc, type is text/html, content is body """        
-        self.sendHeader(status,content_type )
+        yield from self.sendHeader(status,content_type )
         self.conn.send(content)
 
 
@@ -220,16 +230,18 @@ class HttpRequest:
         self.conn.send("HTTP/1.0 %d NA\r\n" % status)
         self.conn.send("Content-Type: %s\r\n" % content_type)
         self.conn.send("\r\n")
+        yield
 
     def sendContent(self,content):
         self.conn.send(content)
+        yield
 
 
     
     def sendFile(self, fname, content_type=None, templates = None):
 
         filename = HttpServer.webroot + fname
-        log.debug("Sending file %s " , filename)
+        log.debug("%s Sending file %s " , self.task.name, filename)
         if not content_type:
             content_type = self.get_mime_type(filename)
         self.sendHeader(200,content_type)
@@ -238,20 +250,20 @@ class HttpRequest:
             f =  open(filename, "rb") 
         except OSError as e:
             error = "<h4>Filename: %s. Error: %s</h4>" % (filename,e)
-            log.warn(error)
+            log.warn("%s %s" , self.task.name, error)
             self.conn.send(error)       
 
         if f:    
             if templates: 
-                self.sendStreamTemplated(f,templates)
+                yield from self.sendStreamTemplated(f,templates)
             else:    
-                self.sendStream(f)
+                yield from self.sendStream(f)
 
 
 
     def sendStream(self, f):
         for buf in self.readBuf(f): # note that readBuf is a generator!
-            self.sendBuf(buf)
+            yield from self.sendBuf(buf)
 
     def sendStreamTemplated(self, f,templates ):
         log.debug("sendStreamTemplated "  )
@@ -270,19 +282,22 @@ class HttpRequest:
                             template = line.replace(k,"")
                             if k[0] == '#':
                                 line = template%v
-                                log.debug("Template value:%s",v)
+                                log.debug("%s Template value:%s",self.task.name,v)
                                 self.conn.send(line)       
+                                yield
                             if k[0] == '@':
                                 for tup in v:
-                                    log.debug("Template tuple:%s",tup)
+                                    log.debug("%s Template tuple:%s",self.task.name,tup)
                                     listLine = template%tup
                                     self.conn.send(listLine)       
+                                    yield
                         except Exception as e:
                             tup = e.args
-                            log.warn("Exception:%s %s ",e.__class__,tup)
+                            log.warn("%s Exception:%s %s ",self.task.name,e.__class__,tup)
             else:
                 # non templated lines
-                self.conn.send(line)       
+                self.conn.send(line)
+                yield asyncio.Wait(1)
                             
 
 
@@ -291,6 +306,7 @@ class HttpRequest:
         tosend = len(buf)
         while tosend > 0:    
             i = self.conn.send(buf)
+            yield asyncio.Wait(5)
             tosend = tosend -i
             total = total + i
             buf = buf[i:]
@@ -306,7 +322,7 @@ class HttpRequest:
                 log.trace("Yielding a buffer")
                 yield buf    
             else:    
-                log.info ("File fully read")
+                log.debug ("%s File fully read", self.task.name)
                 f.close()
                 f = None
 
@@ -320,8 +336,10 @@ class HttpRequest:
             if line:
                 yield line
             else:
-                log.info ("File fully read")
-                f.close()    
+                log.debug ("%s File fully read", self.task.name)
+                f.close() 
+                f = None
+   
 
 
             

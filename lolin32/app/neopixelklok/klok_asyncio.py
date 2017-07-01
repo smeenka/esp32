@@ -33,7 +33,9 @@ log.info("Current platform: id:%s",sys.platform )
 def heap():
     yield
     while True:
-        log.info ("Memory free: %d time:%s" , gc.mem_free() ,  klok.toString() )
+        cpuload = (10000 - asyncio.sched.idlecount) / 100
+        asyncio.sched.idlecount = 0
+        log.info ("Memory free: %d cpu load: %d %% time:%s" , gc.mem_free() , cpuload,  klok.toString() )
         yield
 
 def wlanConnect():
@@ -147,7 +149,7 @@ sched.task(klokControl(),    name = "klok",     period = 1000,prio = 5)
 sched.task(neoControl(),     name = "neo",      period = 1000)
 sched.task(oncePerDay(),     name = "oncePerDay",period = 3600 *1000)
 sched.task(http.listen(port),name = "webServer")
-sched.enablePolling(50) 
+sched.enablePolling(100) 
 sched.enableGC(100) 
 log.info("Loaded class Neopixelklok. Start scheduler")  
 sched.mainloop()

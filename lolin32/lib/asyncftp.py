@@ -145,7 +145,7 @@ def ftpserver(commPort = 21,dataP = 1024):
     log.info("Start listening")
     while True:
         try:
-            s = yield asyncio.StreamWait()
+            yield asyncio.StreamWait()
             conn, clientaddr = commSock.accept()
             log.debug("Got a connection from %s " ,clientaddr)
             if conn:
@@ -165,7 +165,7 @@ def ftpserver(commPort = 21,dataP = 1024):
                 log.warn("Exception:%s %s ",e.__class__,tup)
                 raise e
 
-cwd = '.'
+cwd = '/'
 fromname = None
 dataSock = None
 dataPort = None
@@ -254,7 +254,7 @@ def commandState(conn,line):
             # probably should switch between binary and not
             conn.send('200 Transfer mode set\r\n')
         elif command == "SIZE":
-            size = os.stat(cwd)[6]
+            size = os.stat(path)[6]
             conn.send('213 {}\r\n'.format(size))
         elif command == "QUIT":
             conn.send('221 Bye.\r\n')
@@ -263,7 +263,7 @@ def commandState(conn,line):
             result = '227 Entering Passive Mode ({},{},{}).\r\n'.format(
                 addr.replace('.',','), dataPort>>8, dataPort%256)
             conn.send(result)
-            print ("Sending:",result)
+            print ("Sending:",result) 
 
         elif command == "LIST" or command == "NLST":
             if not payload.startswith("-"):

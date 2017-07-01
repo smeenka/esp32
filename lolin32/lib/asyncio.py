@@ -22,6 +22,7 @@ class Scheduler(object):
         # Tasks waiting for other tasks to exit
         self.exit_waiting = {}
         self.signal_waiting = {}
+        self.idlecount = 0
 
         # I/O waiting
         self.io_waiting_task  = {} # key task, value streamobj
@@ -49,7 +50,7 @@ class Scheduler(object):
         waiting = self.exit_waiting.pop(task.tid,[])
         for task in waiting:
             self.schedule(task)
-        # remove task form IO waiting list
+        # remove task from IO waiting list
         file = self.io_waiting_task.pop(task,None)
         if file:
             log.debug("Deleting stream from waiting list  ")                
@@ -98,7 +99,6 @@ class Scheduler(object):
                 for task,f in self.io_waiting_task.items():
                     if f == file:
                         #log.info("Scheduling task id %s" % task.name)
-                        task.params = f
                         self.schedule(task)
                         break
 
@@ -130,10 +130,12 @@ class Scheduler(object):
         self.schedule(gc)
 
 
-        
-
     def mainloop(self, stopOnError = False):
+        now = 0
         while True:
+            if time.ticks_ms() <= now:
+                continue
+
             if self.ready:
                 # fix current millis, before start of task
                 now = time.ticks_ms()
@@ -260,9 +262,11 @@ class Scheduler(object):
 
                     self.schedule(task)            
                 else:
+                    self.idlecount += 1
                     machine.idle()
             else:
-                pass
+                self.idlecount += 1
+                machine.idle()
 
        
 

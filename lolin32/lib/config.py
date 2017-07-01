@@ -40,4 +40,4 @@ def save():
             raise e
 
 count = get("bootcount",0)
-put("bootcount",count + 1)
+#put("bootcount",count + 1)

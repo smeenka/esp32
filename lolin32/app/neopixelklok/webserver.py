@@ -48,18 +48,17 @@ class WebServer:
     def handleRoot(self,request):    
         log.debug("handleRoot")
         if wifi.wlan.isconnected():
-            self.handleStation(request)
+            yield from self.handleStation(request)
         else:
-            self.handleAp(request)
+            yield from self.handleAp(request)
     
     def handleAp(self,request):
         log.debug("handleAp")
         temp = {}
         temp["#time"] = klok.toString()
-        request.sendFile("/html/ap.html",templates = temp)
+        yield from request.sendFile("/html/ap.html",templates = temp)
 
     def handleStation(self,request):
-        log.debug("handleStation")
         temp = {}
         temp["#brightness"] = config.get("brightness")
         temp["#quarters"] = config.get("quarters")
@@ -67,7 +66,7 @@ class WebServer:
         temp["#bootcount"] = config.get("bootcount")
         temp["#ip"]  = wifi.getIp()
         temp["#status"]= "connected"
-        request.sendFile("/html/station.html",templates = temp)
+        yield from request.sendFile("/html/station.html",templates = temp)
         
 
     def handleApList(self,request):
@@ -86,7 +85,7 @@ class WebServer:
         temp["@networks"]= r
         temp["#ip"]  = wifi.getIp()
         temp["#status"]= "connected"
-        request.sendFile("/html/aplist.html",templates = temp)
+        yield from request.sendFile("/html/aplist.html",templates = temp)
 
     def handleSetSSID(self,request):
         log.debug("handleSetSSID") 
@@ -97,14 +96,15 @@ class WebServer:
         pw   = fields[1][5:]
         log.info("ssid:%s pw:%s",ssid,pw)
         wifi.connect2ap(ssid,pw)
-        self.handleStation(request)
+        yield from self.handleStation(request)
  
 
     def handleStatic(self,request):
-        request.sendFile(request.path)
+        yield from request.sendFile(request.path)
 
     def handleKillOs(self,request):
         import sys
+        yield
         sys.exit(0)
 
 
@@ -117,31 +117,32 @@ class WebServer:
         config.put(key,v)
         log.debug("put dirty:%s",config.dirty)
 
-        request.sendOk()
+        yield from request.sendOk()
 
 
 
     def handleGetIp(self,request):
         log.info("get time %s", wifi.getIp() )
-        request.send(200, "application/json",'{"ip","%s"}'%wifi.getIp() )
+        yield from request.send(200, "application/json",'{"ip","%s"}'%wifi.getIp() )
 
 
 
     def handleReset(self):
         log.debug ("Reset of clock requested")
         import machine
+        yield
         machine.reset()
     
     def handleMode(self,request):
         mode = request.path[6:]
         neo.setmode(mode,request.params)
-        request.send(200, "application/json",'{"ok":true}')
+        yield from request.send(200, "application/json",'{"ok":true}')
 
 
     def handleKlokGet(self,request):
         jsons = klok.getJsonTime()
         log.trace("/time/get: %s", jsons)
-        request.send(200, "application/json",jsons )
+        yield from request.send(200, "application/json",jsons )
 
     def handleKlokSync(self,request):
         path = request.path
@@ -151,5 +152,5 @@ class WebServer:
         klok.minute     = int(value["minute"]) 
         klok.second     = int(value["second"]) 
         log.debug ("hour: %s minute:%s  second:%s",klok.hour,klok.minute,klok.second)
-        request.sendOk()
+        yield from request.sendOk()
 
