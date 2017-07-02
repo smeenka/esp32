@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === library  tests  ===
+# ------------------------------------------------------------
 print("Loading module test_httpserver ...")
 # Created by Anton Smeenk
 
@@ -46,24 +52,25 @@ def handleRoot(request):
     temp["@networks"]= r
     temp["#ip"]  = wifi.getIp()
     temp["#status"]= "connected"
-    request.sendFile("/html/aplist.html",templates = temp)
+    yield from request.sendFile("/html/aplist.html",templates = temp)
 
 
 def handleStatic(request):
     led.value(1)
-    request.sendFile(request.path)
+    yield from request.sendFile(request.path)
     led.value(0)
 
 
 def handleKillOs(request):
     log.warn("================= handleKillOs")  
+    yield
     server.shutdown()
 
 
 import sys
 print(sys.path)
 
-server = http_server.HttpServer(sys.path[0] + "/../../web")
+server = http_server.HttpServer("/web/")
 
 # register all routes
 server.resetRouteTable()
@@ -86,13 +93,15 @@ def  ledR():
 def  kill():
     yield
     log.info("Shut down server!")
+    server.shutdown()
     yield asyncio.KillOs()
 
 # Run them 
 sched = asyncio.sched
 sched.task( ledR() , name ="ledR", period = 1000  )
-sched.task( server.listen(8080), name = "accept" )
+sched.task( server.listen(80), name = "accept" )
 sched.task(kill(),  time2run = 2 * 60 * 1000 )
-sched.enablePolling(50) 
+sched.enablePolling() 
+sched.enableGC() 
 sched.mainloop()  
 

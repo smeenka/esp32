@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === library  tests  ===
+# ------------------------------------------------------------
 # main.py -- put your code here!
 print("Loading module test_lowpower ...")
 

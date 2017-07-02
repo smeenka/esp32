@@ -1,5 +1,9 @@
-### Author: Anton Smeenk
-### Description: HTTP Server able to handle routes and parameters
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === HTTP server ===
+# ------------------------------------------------------------
 import usocket as socket
 import utime as time
 import array

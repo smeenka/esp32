@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === application: neopixel klok  ===
+# ------------------------------------------------------------
 print("== module neostate.py")
 from neoklok import klok
 import neopixels

@@ -1,6 +1,8 @@
 # ------------------------------------------------------------
-# pyos.py  -  The Python Cooperative Operating System
+#        Developping with MicroPython in an async way
 #
+# ------------------------------------------------------------
+#                      === asyncio tests  ===
 # ------------------------------------------------------------
 print("==== /sd/test/asyncio/test_taskwait.py")
 

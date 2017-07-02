@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === library  tests  ===
+# ------------------------------------------------------------
 print("Loading module test_angular2 ...")
 # Created by Anton Smeenk
 

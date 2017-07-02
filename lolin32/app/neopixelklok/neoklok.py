@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === application: neopixel klok  ===
+# ------------------------------------------------------------
 print("== module neoklok.py")
 import logging
 log  = logging.getlogger("neok")

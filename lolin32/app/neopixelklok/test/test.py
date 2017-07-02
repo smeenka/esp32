@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === application test: neopixel klok  ===
+# ------------------------------------------------------------
 print("==== /flash/app/neopixelklok/test/test.py")
 
 

@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === library  tests  ===
+# ------------------------------------------------------------
 print("==== /sd/test/lib/test_poll.py")
 import machine
 import utime as time

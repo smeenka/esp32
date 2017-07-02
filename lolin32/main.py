@@ -1,4 +1,9 @@
-# main.py -- put your code here!
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === main.py  ===
+# ------------------------------------------------------------
 print("Loading module main ...")
 
 import os
@@ -7,8 +12,7 @@ import time
 import machine  
 import wifi
 
-sys.path.append("/lib")
-sys.path.append("/app")
+#sys.path.append("/lib")
 
 led    = machine.Pin(5, mode=machine.Pin.OUT)
 
@@ -25,15 +29,17 @@ wifi.connect2ap()
 while not wifi.wlan.isconnected():
     blink(1)
  
+wifi.ap.active(False)
+
 print('Connected!! network config:', wifi.wlan.ifconfig())
 blink(5)
 try:
     print ("Starting application")
     os.chdir("/test/lib")
     #s.chdir('/test/asyncio')
-    #import test
-    os.chdir("/app/neopixelklok")
-    import klok_asyncio
+    import test
+    #os.chdir("/app/neopixelklok")
+    #import klok_asyncio
 
 except Exception as e:
     print ("Exception:",e)

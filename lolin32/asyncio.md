@@ -3,11 +3,18 @@
 
 [Back to the main page](readme.md)
 
-## For clarity: the original micropython library (https://github.com/micropython/micropython-lib) does contain the official version of the asyncio library.
+## Acknolegments 
 
-Thats the official version of asyncio. So please use the official version for your projects.
+This version of asyncio is derived from the version within the micropython library (https://github.com/micropython/micropython-lib).
 
-The version presented here is my version, with no pretentions that it is better or worser than the official version.
+Why a different version?
+I try to develop a version of asyncio, which is lean and mean, though with a lot of functionality. Not better or worser than the official version, but different.
+
+So its up to you, if you want the use the official version or the version presented here.
+
+I hope you can learn something, and enjoy programming in an async way.
+
+As we say in Dutch: het is allemaal ter lheringh ende vermeak.
 
 That said lets proceed:
 
@@ -39,7 +46,7 @@ and modify  /test/asyncio/test.py such that the requested test is started.
 
 ## Generator 
 
-Each thread in the usyncio is a generator wrapped in a task.
+Each thread in asyncio is a generator wrapped in a task.
 
 A generator should:
 * contain at least one yield statement
@@ -105,6 +112,39 @@ There should only be one instance of the scheduler
 	sched.enableGC(100) 
 	# last statement:
 	sched.mainloop()
+
+## mainloop
+
+The mainloop can be called with a boolean mainloop(stopOnError = True)
+
+Default this boolean is false, and the mainloop will continue even in case of errors.
+But it is difficult to solve problems, as you will have no stacktrace.
+
+With stopOnError = True the mainloop will stop with a stacktrace, and the ftpserver will be started (if called from the main.py)
+
+## asyncio with streams and polling.
+
+The real power of asyncio way of working is with socket streams.
+To work in an async way one should:
+* start the poller with sched.enablePolling()
+
+	a poller task will be added to the scheduler, checking each 100 ms if one of the registerd sockets is ready 
+* mark a socket as nonblocking
+* register the socket with the OS as 
+	* asyncio.StreamReader(socket)
+	* asyncio.StreamWriter(socket)
+	* asyncio.StreamReaderWriter(socket)
+
+	The OS will add the current task to the dictionary *io_waiting_task*
+
+* sending or reading from the stream
+* yield asyncio.StreamWait()	
+
+	The OS will remove the task from the ready list.
+
+* As soon as the socket is ready, the poller task will notice this, and reschedule the task
+
+Notice that a task is removed from the *io_waiting_task* at the moment the task dies.
 
 
 ## Return class for yield

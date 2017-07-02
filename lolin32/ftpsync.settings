@@ -4,8 +4,8 @@
  
 	"default": {
 
-		"host": "192.168.2.80",
-		"username": "username",  // or null for anonymous login
+		"host": "192.168.2.60",
+		"username": "",  // or null for anonymous login
 		"password": "",
 		"path": "/",
 

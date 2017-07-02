@@ -81,4 +81,3 @@ and modify in /test/lib/test.py such that the requested test is started.
 
 Connect a neopixel string with at least 4 pixels to pin 13 for some tests.	    
 
-Note that the test_httpserver is not yet adapted to the async way of working

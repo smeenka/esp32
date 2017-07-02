@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === library  tests  ===
+# ------------------------------------------------------------
 from  neopixels import Neopixels
 import utime as time
 

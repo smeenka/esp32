@@ -1,5 +1,5 @@
 # ------------------------------------------------------------
-# pyos.py  -  The Python Cooperative Operating System
+#        Developping with MicroPython in an async way
 #
 # ------------------------------------------------------------
 #                      === Scheduler ===

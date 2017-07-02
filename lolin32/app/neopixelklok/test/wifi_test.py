@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === application test: neopixel klok  ===
+# ------------------------------------------------------------
 import wifi
 import utime as time
 

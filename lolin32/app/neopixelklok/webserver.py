@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === application: neopixel klok  ===
+# ------------------------------------------------------------
 print("== module webserver.py")
 ### Author: Anton Smeenk
 ### Description: HTTP Server able to handle routes and parameters

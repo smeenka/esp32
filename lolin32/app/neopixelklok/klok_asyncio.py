@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                === application: neopixel klok  ===
+# ------------------------------------------------------------
 print("== module klok_asyncio.py")
 import wifi  
 import webserver

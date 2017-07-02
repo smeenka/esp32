@@ -1,3 +1,9 @@
+# ------------------------------------------------------------
+#        Developping with MicroPython in an async way
+#
+# ------------------------------------------------------------
+#                      === neopixels ===
+# ------------------------------------------------------------
 from machine import Pin
 from esp import neopixel_write
 
