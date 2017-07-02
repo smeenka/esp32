@@ -3,7 +3,7 @@
 
 [Back to the main page](readme.md)
 
-## Acknolegments 
+## Acknowledgements 
 
 This version of asyncio is derived from the version within the micropython library (https://github.com/micropython/micropython-lib).
 
@@ -14,7 +14,7 @@ So its up to you, if you want the use the official version or the version presen
 
 I hope you can learn something, and enjoy programming in an async way.
 
-As we say in Dutch: het is allemaal ter lheringh ende vermeak.
+As we say in Dutch: het is allemaal ter lheringh ende vermaek.
 
 That said lets proceed:
 
@@ -79,15 +79,15 @@ The task contains the meta data of the generator:
 * interval, timetorun etc.
 
 
-	tid     	 = Task.taskid   # Task ID
-	self.target  = target        #  create coroutine from given generator
-	self.params  = None          # Value to send/receive
-	self.prio    = prio          # default: 10.   1=very high 100=low
-    self.name    = name 		 # name of the task
-	self.period  = period        # zero:     run now
-	                             # negative: run once
-	                             # positive: run at interval
-	self.time2run = 			 # the timer tick after which this task should run	
+	tid     	 = Task.taskid   : Task ID
+	self.target  = target        : create coroutine from given generator
+	self.params  = None          : Value to send/receive
+	self.prio    = prio          : default: 10.   1=very high 100=low
+    self.name    = name 		 : name of the task
+	self.period  = period        :  zero:     run now
+	                             :  negative: run once
+	                             : positive: run at interval
+	self.time2run = time2run 	 : the timer tick after which this task should run	
 
 * If period is None and timetorun is None the task will start now, and run without time delay
 * If period is 300 and timetorun is None, the task will start in 300 ms and then run every 300 ms

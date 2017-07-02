@@ -9,6 +9,18 @@ The content of the lolin32 directory should be uploaded to a device.
 
 This can be done for example with filemanager krusader on ubuntu, and the lolin32 board running the ftpserver.
 
+After uploading the stack the first thing to do is:
+
+	import wifi
+	wifi.connect2ap("your_ssid","verysecret")
+
+In this way the ssid and password is stored in the config file.
+Next boot the main.py will connect to the ap automagically.
+
+If preferred one can manually edit the config.json file and modify the wlan_ip key:
+
+	"wlan_ip":"192.168.xxx.xxx"	
+
 ## main.py
 
 
