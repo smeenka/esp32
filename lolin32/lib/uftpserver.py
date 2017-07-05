@@ -2,10 +2,11 @@ import socket
 import network
 import uos
 import gc
+# based in version in https://github.com/cpopp/MicroFTPServer
 
-print ("== Loading utpserver module ...")
+print ("== Loading uftpserver module ...")
 
-def send_list_data(path, dataclient, full):
+ 
     try: # whether path is a directory name
         for fname in sorted(uos.listdir(path), key = str.lower):
             dataclient.sendall(make_description(path, fname, full))

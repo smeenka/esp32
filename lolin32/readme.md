@@ -46,6 +46,7 @@ asyncio:
 * supports waiting and time related functions
 
 asyncftp:
+* based on version in https://github.com/cpopp/MicroFTPServer
 * ftpserver as an asyncio task: can run concurrent aside a web server
 * supports only passive mode
 
@@ -60,6 +61,7 @@ logging:
 * java log4j alike
 
 uftpserver:
+* version from https://github.com/cpopp/MicroFTPServer with small modifications
 * synchronous ftp server
 * supports only passive mode
 

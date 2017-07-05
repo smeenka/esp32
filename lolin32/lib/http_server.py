@@ -92,8 +92,6 @@ class HttpServer:
                     pass
                 else:    
                     log.warn("Exception:%s %s ",e.__class__,tup)
-                    if sys.platform == "linux":
-                        raise
                     raise e    
 
 

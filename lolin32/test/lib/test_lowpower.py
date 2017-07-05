@@ -12,12 +12,12 @@ import sys
 import utime as time
 import machine
 import network
-
+import wifi
 
 led    = machine.Pin(5, mode=machine.Pin.OUT)
 
-print("Switching off green led")
-led.value(0)
+print("Switching off blue led")
+led.value(1)
 time.sleep(5)
 
 print("Switching off WLAN")
@@ -31,47 +31,22 @@ ap.active(False)
 time.sleep(5)
 
 
-print("Forever light sleep")
-while True:
+print("Sleeping forever")
+#while True:
+#    machine.idle()
+
+
+now = time.ticks_ms()
+count = 0
+while count < 1000:
     machine.idle()
-    time.sleep(5)
+    count += 1
+now1 = time.ticks_ms()
+diff = now1- now
+print("1000 loops in %s ms. Per loop %s ms" %( diff, diff/1000) )
+print("Switch on wifi ... " ) 
+wifi.connect2ap()
 
-
-
-
-
-
-ap  = network.WLAN(network.AP_IF)
-ap.active(False)
-
-
-wlan = network.WLAN(network.STA_IF)
-#antenna = machine.Pin(16, machine.Pin.OUT, value=0)
-
-if not wlan.active() or not wlan.isconnected():
-   wlan.active(True)
-   wlan.ifconfig(  ('192.168.2.80', '255.255.255.0', '192.168.2.254', '192.168.2.254') )
-
-   print('connecting to:', ssid)
-   wlan.connect(ssid, password)
-   while not wlan.isconnected():
-      blink(1)
-
-print('network config:', wlan.ifconfig())
-blink(5)
-try:
-    print ("Starting application")
-    os.chdir("/test")
-    #os.chdir("lib")
-    os.chdir('asyncio')
-    import test
-except Exception as e:
-    print ("Exception:",e)
-except  KeyboardInterrupt:
-    print ("KeyboardInterrupt")
-
-led.value(1)
-import uftpserver
 
 
 
