@@ -165,7 +165,7 @@ class HttpRequest:
 
                 for route  in routes["post"]:
                     path = route[0]
-                    log.debug ("Testing post route %s",  path)
+                    log.trace ("Testing post route %s",  path)
                     if self.path.startswith(path):
                         cb = route[1]
                         if cb:

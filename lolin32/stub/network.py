@@ -32,7 +32,7 @@ class WLAN:
         if type == STA_IF:
            log.info("Type station")
 
-    def config(self , key = None,essid=None,password=None):
+    def config(self , key = None,channel = 11,essid=None,password=None):
         log.info("config key: %s",key )
         if key == "ip":
             return self.ip

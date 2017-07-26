@@ -4,6 +4,7 @@
 
 Content:
 * [Asyncio cooperative multitasking](asyncio.md)
+* [Robonova robot and hitec servos in HMI mode](robonova.md)
 
 The content of the lolin32 directory should be uploaded to a device.
 

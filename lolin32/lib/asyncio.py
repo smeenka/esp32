@@ -160,7 +160,7 @@ class Scheduler(object):
                     except StopIteration: 
                         self.exit(task)
                         continue  # do not reschedule current task
-                    except Exception as e:
+                    except Exception  as e:
                         tup = e.args
                         log.warn("Task %s: Exception: %s %s ",task.name, e.__class__,tup)   
                         if stopOnError:
@@ -457,6 +457,11 @@ class Task(object):
             if self. time2run == other.time2run:
                 return  True
         return False
+    
 
+# An exception class that is never raised by any code anywhere
+class NeverMatch(Exception):
+    pass
+    
 #create instance of scheduler, so that it is globally visible for all programs
 sched = Scheduler()

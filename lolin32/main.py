@@ -11,10 +11,11 @@ import sys
 import time
 import machine  
 import wifi
-
+ 
 #sys.path.append("/lib")
 
 led    = machine.Pin(5, mode=machine.Pin.OUT)
+
 
 def blink(n):
   for i in range(n):
@@ -24,22 +25,27 @@ def blink(n):
     time.sleep_ms(100)
 
 
-#wifi.ap.active(False)
-wifi.connect2ap()
-while not wifi.wlan.isconnected():
-    blink(1)
- 
-wifi.ap.active(False)
+#if machine.reset_cause() == machine.SOFT_RESET:
+#    print ("Soft reset, doing nothing")
 
+if wifi.wlan.isconnected():
+    print ("Already connected,  doing nothing")
+else:
+    wifi.ap.active(False)
+    wifi.connect2ap()
+    while not wifi.wlan.isconnected():
+        blink(1)
+ 
 print('Connected!! network config:', wifi.wlan.ifconfig())
 blink(5)
+
 try:
     print ("Starting application")
     os.chdir("/test/lib")
     #s.chdir('/test/asyncio')
     import test
-    #os.chdir("/app/neopixelklok")
-    #import klok_asyncio
+    #os.chdir("/app/robonova")
+    #import robonova_async
 
 except Exception as e:
     print ("Exception:",e)

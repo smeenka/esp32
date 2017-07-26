@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--meta http-equiv='refresh' content='5'-->
+    <style>
+    </style>
+    <title>Neopixel Klok AP Lijst</title>
+    <meta charset='utf-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge, chrome=1' />
+    <link href='/css/styles.css' rel='stylesheet' />
+</head>
+<body>
+
+    <header class='site-header'>
+        <div class = 'header'>
+            <div class='header-text'>
+            <table class ='table-header'><tr>
+#time           <td id ='label_now' class='current_time'>%s<td/>
+            </tr></table>
+            </div>
+         </div>
+    </header>
+
+
+    <div class='tabs'>
+        <ul class='tab-links'>
+            <li><a href='#tab_ap'>Access Points</a></li>
+        </ul>
+
+        <div class='tab-content'>
+            <div id='tab_ap' class='tab'>
+                <table class ='table-header'>
+                    <tr>
+                        <td>wifi status:</td>
+#status                   <td>%s<td/>
+                    </tr>
+                    <tr>
+                        <td>ip adres:</td>
+#ip                        <td>%s<td/>
+                    </tr>
+                </table>
+                </div>
+                <div>
+                <form method='post' action='set_ssid'>
+                    <table class ='table-header'>
+                        <tr>
+                            <td>Beschikbare netwerken</td>
+                        </tr>
+@networks<tr><td><input type='radio' name='ssid' value='%s'>%s (%s) %s</td></tr>
+                        <tr>
+                            <td>password</td>
+                            <td><input name='pass' value = '' length='32'><td/>
+                        </tr>
+                        <tr>
+                            <td><input class='button' type='submit' value='Meld aan bij gekozen ssid'></input><td/>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>
+
+
+
+
+

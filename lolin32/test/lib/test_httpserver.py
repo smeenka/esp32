@@ -4,7 +4,7 @@
 # ------------------------------------------------------------
 #                      === library  tests  ===
 # ------------------------------------------------------------
-print("Loading module test_httpserver ...")
+print("== module test_httpserver ...")
 # Created by Anton Smeenk
 
 import uos as os

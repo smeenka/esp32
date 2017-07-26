@@ -7,17 +7,27 @@
 print("== Loading module config")
 
 import ujson as json
+import sys
+
 settings = {}
 dirty = False
+
+
+if sys.platform == "linux": 
+    filen =  "settings.json"
+else:
+    filen =  "/settings.json"
+
+
  
 try:
-    print ("Opening config file settings.json")
-    with open("/settings.json", "r") as f:
+    print ("Opening config file ",filen)
+    with open(filen, "r") as f:
         text = f.read()
         settings = json.loads(text)
 
 except Exception as e:
-    print ("config file does not exist. Empty config created!", e)
+    print ("config file %s does not exist. Empty config created!"% filen )
     settings =  { }
 
 def get(k, default = 0):
@@ -37,7 +47,7 @@ def save():
     global dirty
     if dirty:
         try:
-            with open("/settings.json", "w") as f:
+            with open(filen, "w") as f:
                 text = json.dumps(settings)
                 f.write(text)
                 dirty = False

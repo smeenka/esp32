@@ -14,9 +14,8 @@ import array
 import sys
 import wifi
 import config
-from  neoklok import klok
-from neostate import neo
 import ujson as json
+from  robonova_control import driverL, driverR
 
 import logging
 log = logging.getlogger("webs")
@@ -27,23 +26,29 @@ class WebServer:
         log.debug ("Constructor WebServer") 
         self.server = httpserver 
 
-    def modeStation(self):   
-        log.debug ("modeStation") 
         server = self.server
         server.resetRouteTable()
         server.onEnd(".css",    self.handleStatic )
         server.onEnd(".js",     self.handleStatic )
+        self.server.onExact("/servos/positions", self.handleGetPos)
+
         self.server.onExact("/",           self.handleRoot )
         self.server.onExact("/index.html", self.handleRoot )
         self.server.onExact("/aplist.html", self.handleApList )
         self.server.onExact("/ap.html", self.handleAp )
         self.server.onExact("/station.html", self.handleStation )
+        self.server.onExact("/reset", self.handleReset)
+
         self.server.onExact("/kill/os", self.handleKillOs )
         self.server.onExact("/get_ip", self.handleGetIp )
-        self.server.onPost("/settings", self.handleStationSettings)
-        self.server.onPost("/set_ssid", self.handleSetSSID)
-        self.server.onExact("/reset", self.handleReset)
-        self.server.onStart("/mode/", self.handleMode)
+
+        self.server.onPost ("/servos/position", self.handleSetPos)
+        self.server.onPost ("/servos/speed", self.handleSetSpeed)
+        self.server.onPost ("/servos/gain", self.handleSetGain)
+        self.server.onPost ("/servos/id", self.handleSetId)
+        self.server.onPost ("/servos/all", self.handleSetAll)
+        self.server.onPost ("/set_ssid", self.handleSetSSID)
+
         log.debug ("finished modeStation") 
 
 
@@ -58,7 +63,7 @@ class WebServer:
     def handleAp(self,request):
         log.debug("handleAp")
         temp = {}
-        temp["#time"] = klok.toString()
+        temp["#time"] = "not implemented yet"
         yield from request.sendFile("/html/ap.html",templates = temp)
 
     def handleStation(self,request):
@@ -76,7 +81,7 @@ class WebServer:
         log.debug("handleApList, getting list") 
         aplist = wifi.wlan.scan()
         temp = {}
-        temp["#time"] = klok.toString()
+        temp["#time"] = "tbd"
         r = []
         for n in aplist:
             ssid    = n[0].decode()
@@ -122,12 +127,81 @@ class WebServer:
 
         yield from request.sendOk()
 
+    def handleSetPos(self,request):
+        path = request.path
+        value = json.loads(request.body)
+        pos    = int(value["pos"]) 
+        id     = int(value["id"]) 
+        group     = value["group"]
+        log.debug ("Set position for group:%s id %d to %d ",group,id,pos)
+        if "L" in group:
+            driverL.setPosition(id,pos)
+        if "R" in group:
+            driverR.setPosition(id,pos)
+        yield from request.sendOk()
+
+    def handleSetAll(self,request):
+        path = request.path
+        value = json.loads(request.body)
+        pos    = int(value["pos"]) 
+        group     = value["group"]
+        log.debug ("Group: %a Set position all to %d ",group,pos)
+        if "L" in group:
+            driverL.allMove(pos)
+        if "R" in group:
+            driverR.allMove(pos)
+        yield from request.sendOk()
+
+    def handleSetSpeed(self,request):
+        path = request.path
+        value = json.loads(request.body)
+        log.debug(request.body)
+        id        = int(value["id"]) 
+        speed     = int(value["speed"]) 
+        group     = value["group"]
+        log.debug ("Set speed for group: %sid %d to %d ",group,id,speed)
+        if "L" in group:
+            driverL.setSpeed(id,speed)
+        if "R" in group:
+            driverR.setSpeed(id,speed)
+        yield from request.sendOk()
+
+    def handleSetGain(self,request):
+        path = request.path
+        value = json.loads(request.body)
+        log.debug(request.body)
+        gain     = int(value["gain"]) 
+        group     = value["group"]
+        log.debug ("Set gain for group: %s to %d ",group,gain)
+        if "L" in group:
+            driverL.allGain(gain)
+        if "R" in group:
+            driverR.allGain(gain)
+        yield from request.sendOk()
+
+
+    def handleSetId(self,request):
+        path  = request.path
+        value = json.loads(request.body)
+        newid     = int(value["id"]) 
+        group     = value["group"]
+        if "L" in group:
+            log.debug ("Set newid for group Left to  %d",newid)
+            driverL.setId(newid)
+        if "R" in group:
+            log.debug ("Set newid for group Right to  %d",newid)
+            driverR.setId(newid)
+        yield from request.sendOk()
+
 
 
     def handleGetIp(self,request):
         log.info("get time %s", wifi.getIp() )
         yield from request.send(200, "application/json",'{"ip","%s"}'%wifi.getIp() )
 
+    def handleGetPos(self,request):
+        jsons = driverL.getPosJson()
+        yield from request.send(200, "application/json",jsons )
 
 
     def handleReset(self):
@@ -136,20 +210,6 @@ class WebServer:
         yield
         machine.reset()
     
-    def handleMode(self,request):
-        mode = request.path[6:]
-        neo.setmode(mode,request.params)
-        yield from request.send(200, "application/json",'{"ok":true}')
 
 
-
-    def handleKlokSync(self,request):
-        path = request.path
-        log.debug ("Path: %s Post:%s ",request.path,request.body)
-        value = json.loads(request.body)
-        klok.hour     = int(value["hour"]) 
-        klok.minute     = int(value["minute"]) 
-        klok.second     = int(value["second"]) 
-        log.debug ("hour: %s minute:%s  second:%s",klok.hour,klok.minute,klok.second)
-        yield from request.sendOk()
 

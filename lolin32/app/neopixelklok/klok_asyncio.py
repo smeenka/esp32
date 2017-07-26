@@ -158,5 +158,5 @@ sched.task(http.listen(port),name = "webServer")
 sched.enablePolling(100) 
 sched.enableGC(100) 
 log.info("Loaded class Neopixelklok. Start scheduler")  
-sched.mainloop()
+sched.mainloop(True)
 
