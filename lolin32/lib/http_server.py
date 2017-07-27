@@ -129,7 +129,7 @@ class HttpRequest:
                 p  = pathArray[1]
                 pa = p.split("&")
                 for p in pa:
-                     log.info("p: %s",p)
+                     log.debug("p: %s",p)
                      kv = p.split("=")
                      k = kv[0]
                      v = kv[1]

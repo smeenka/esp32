@@ -27,7 +27,7 @@ webs = logging.getlogger("webs")
 log  = logging.getlogger("nova")
 
 sche.setLevel(logging.INFO)
-http.setLevel(logging.DEBUG)
+http.setLevel(logging.INFO)
 webs.setLevel(logging.DEBUG)
 htec.setLevel(logging.INFO)
 log.setLevel(logging.DEBUG)
@@ -91,7 +91,7 @@ sched = asyncio.sched
 sched.task(heap(),           name = "heap",     period = 10000)
 sched.task(wlanConnect(),    name = "wlan",     period = 1000, time2run = 500)
 sched.task(http.listen(port),name = "webServer")
-sched.task(robonova_control.servoTask(),name = "servos", period=1000,time2run = 112)
+sched.task(robonova_control.servoTask(),name = "servos", period=500,time2run = 112)
 
 sched.enablePolling(100) 
 sched.enableGC(100) 

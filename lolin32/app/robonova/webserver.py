@@ -185,7 +185,11 @@ class WebServer:
         yield from request.send(200, "application/json",'{"ip","%s"}'%wifi.getIp() )
 
     def handleGetPos(self,request):
-        jsons = driverL.getPosJson()
+        jsons = "[]"
+        if "L" in request.params['group']:
+            jsons = driverL.getPosJson()
+        elif "R" in request.params['group']:
+            jsons = driverR.getPosJson()
         yield from request.send(200, "application/json",jsons )
 
 
