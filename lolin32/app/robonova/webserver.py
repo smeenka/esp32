@@ -49,9 +49,6 @@ class WebServer:
         self.server.onPost ("/servos/all", self.handleSetAll)
         self.server.onPost ("/set_ssid", self.handleSetSSID)
 
-        log.debug ("finished modeStation") 
-
-
 
     def handleRoot(self,request):    
         log.debug("handleRoot")
@@ -98,7 +95,6 @@ class WebServer:
     def handleSetSSID(self,request):
         log.debug("handleSetSSID") 
         body = request.body
-        log.info("body:%s",body)
         fields = body.split('&')
         ssid = fields[0][5:]
         pw   = fields[1][5:]
@@ -115,17 +111,6 @@ class WebServer:
         yield
         sys.exit(0)
 
-
-    def handleStationSettings(self,request):
-        path = request.path
-        value = json.loads(request.body)
-        v     = int(value["v"]) 
-        log.debug ("Path: %s Post:%s value %d",request.path,request.body,v)
-        key = request.path[10:]
-        config.put(key,v)
-        log.debug("put dirty:%s",config.dirty)
-
-        yield from request.sendOk()
 
     def handleSetPos(self,request):
         path = request.path
@@ -205,7 +190,7 @@ class WebServer:
 
 
     def handleReset(self):
-        log.debug ("Reset of clock requested")
+        log.debug ("Reset requested")
         import machine
         yield
         machine.reset()

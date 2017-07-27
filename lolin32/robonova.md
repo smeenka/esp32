@@ -5,7 +5,7 @@
 
 ## Acknowledgements 
 
-Robonova is a robot from the year 2008. The orignal control platform (MR-C3024) is an Atmega platform controlled with basic as higher language.
+Robonova is a robot from the year 2008. The original control platform (MR-C3024) is an Atmega platform controlled with Basic as higher language.
 It is a nice control platform, but has its limits.
 
 Robonova consists of 16 special designed servos. Each servo can be controlled with standard pulse, extended pulse or hmi.
@@ -20,7 +20,7 @@ http://www.iri.upc.edu/files/scidoc/1186-Slave-architecture-for-the-Robonova-MR-
 ## Goal
 
 * Short term: I try to control the robonova via HMI, using a lolin32 with micropython as platform. Status: fully working! 
-Longer term: control Robonova via ROS. Create a ROS driver for the the Robonova
+* Longer term: control Robonova via ROS. Create a ROS driver for the the Robonova
 
 ## Firmware modification
 
@@ -28,13 +28,15 @@ To control the servos directory, without extra electronics, the uart RX and TX m
 
 Add next lines to function machine_uart_init_helper in machine_uart.c:
 
-   if (args[ARG_inv].u_int > 0){
+    if (args[ARG_inv].u_int > 0){
         uint32_t mask = (1 << 22 ) | (1<< 19);
         uart_set_line_inverse(self->uart_num, mask);
     }
+    // set data bits
 
 And modify:
-   static const mp_arg_t allowed_args[] = {
+
+    static const mp_arg_t allowed_args[] = {
         { MP_QSTR_baudrate, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_inv, MP_ARG_INT, {.u_int = 0} },
         { MP_QSTR_bits, MP_ARG_INT, {.u_int = 0} },
@@ -50,6 +52,8 @@ Rebuild and flash the new firmware.
 
 The effect is that the esp32 can send frames via TX and the 1k resitor.
 While receiving data the esp32 will transmit 2 zeros, effectivly creating a pullup resistor (note that TX is inverted!)
+
+![alt text](../images/hitecservo.png "HSR8498 Servo connection")
 
 
 # Testing

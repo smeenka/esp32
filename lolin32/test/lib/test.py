@@ -18,4 +18,3 @@ print("==== /test/lib/test.py")
 #import test_ftp
 #import test_lowpower
 import test_hitecservo
-#import test_robonova
