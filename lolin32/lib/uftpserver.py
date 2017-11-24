@@ -101,8 +101,8 @@ def ftpserver():
     ftpsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     datasocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    ftpsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    datasocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    #ftpsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    #datasocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     ftpsocket.bind(socket.getaddrinfo("0.0.0.0", 21)[0][4])
     datasocket.bind(socket.getaddrinfo("0.0.0.0", DATA_PORT)[0][4])
