@@ -25,6 +25,7 @@ BATTERY     = const(0xE8)  #  0     0     read  (voltage,current)
 POSITION    = const(0xE9)  #  Id    speed set speed and read (pos_high,pos_low)
 GAIN        = const(0xEA)  #  0     Gain  can be 1,2 or 3 set gain
 ONOFF       = const(0xEB)  #  0     ofoff ofoff = 1 or 0 motor on or off
+EXIT        = const(0xEF)  #  0     switch off motor, let servo free run
 """
 def invertRxTx():
     u2config0 = ptr32(UART2_CONFIG0_REG) # config 0 reg of uart2
@@ -59,6 +60,7 @@ class HitecServoDriver:
         for i in range(max):
             self.servos.append(None)
             self.positions.append(0)
+        self.allExit() # switch of power to the motors as soon as possible    
 
     def register(self,servo):
         self.servos[servo.id] = servo   
@@ -181,6 +183,9 @@ class HitecServoDriver:
 
     def allOn(self):
         self.sendCommand(ONOFF,0, 1)
+
+    def allExit(self):
+        self.sendCommand(EXIT,0, 0)
 
 
 class HitecServo:
