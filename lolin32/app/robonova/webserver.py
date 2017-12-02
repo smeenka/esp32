@@ -46,6 +46,7 @@ class WebServer:
         self.server.onPost ("/servos/speed", self.handleSetSpeed)
         self.server.onPost ("/servos/gain", self.handleSetGain)
         self.server.onPost ("/servos/id", self.handleSetId)
+        self.server.onPost ("/servos/off", self.handleSetOff)
         self.server.onPost ("/servos/all", self.handleSetAll)
         self.server.onPost ("/set_ssid", self.handleSetSSID)
 
@@ -130,11 +131,30 @@ class WebServer:
         value = json.loads(request.body)
         pos    = int(value["pos"]) 
         group     = value["group"]
-        log.debug ("Group: %a Set position all to %d ",group,pos)
+        log.debug ("Group: %s Set position all to %d ",group,pos)
         if "L" in group:
             driverL.allMove(pos)
         if "R" in group:
             driverR.allMove(pos)
+        yield from request.sendOk()
+
+    def handleSetOff(self,request):
+        path = request.path
+        value = json.loads(request.body)
+        group     = value["group"]
+        onoff     = value["onoff"]
+        log.debug ("Group: %s Set motors %s",group,onoff)
+        if "L" in group:
+            driver = driverL
+        if "R" in group:
+            driver = driverR
+
+        if onoff == '-1':
+            driver.allExit()
+        elif onoff == '0':    
+            driver.allOff()
+        elif onoff == '1':    
+            driver.allOn()
         yield from request.sendOk()
 
     def handleSetSpeed(self,request):

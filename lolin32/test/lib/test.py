@@ -17,4 +17,6 @@ print("==== /test/lib/test.py")
 #import test_wifi
 #import test_ftp
 #import test_lowpower
-import test_hitecservo
+#import test_time
+import test_hallsensor
+#import test_hitecservo

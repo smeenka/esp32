@@ -5,15 +5,14 @@
 #                === application: neopixel klok  ===
 # ------------------------------------------------------------
 print("== module neostate.py")
-from neoklok import klok
 import neopixels
-
 import logging
 log  = logging.getlogger("neop")
 log.setLevel(logging.DEBUG)
 import config
 import ujson  as json
 import asyncio
+import time
 
 class Neostate:
 
@@ -27,11 +26,12 @@ class Neostate:
         self.qColor = (10,    10,   10)
         self.neo.brightness = 50
         self.neo.clearBuffer()
-        self.stateColor = (150,150,150)
+        self.stateColor = (0,0,0)
         self.mode = "klok"
         self.params = {}
         self.mupdate = False
         self.cindex = 0
+        self.updateFromConfig()
 
     def setmode(self,mode,params):
         log.info("Set mode to:%s--",mode)
@@ -51,33 +51,45 @@ class Neostate:
     def stateOff(self):
         self.stateColor = (0,0,0)
 
-    
+    def updateFromConfig(self):
+        self.neo.offset = config.get("offset")
+
+        q = config.get("quarters")
+        if q > 100:
+            q = 100
+            config.put("quarters",q)
+        if q < 0:
+            q = 0
+            config.put("quarters",q)
+        self.qColor = (q,q,q)
+        b =  config.get("brightness",50)
+        if b > 100:
+           b = 100
+        if b < 0:
+           b = 0
+        self.neo.brightness = b
+
+
     def handleKlok(self):
         neo = self.neo
         if config.dirty:
-            neo.offset = config.get("offset")
-            q = config.get("quarters")
-            if q > 100:
-                q = 100
-            self.qColor = (q,q,q)
-            neo.brightness = config.get("brightness",50)
-            if neo.brightness > 100:
-                neo.brightness = 100
+            self.updateFromConfig()
             config.save()
 
-        local_hour = (klok.hour + config.get("timeoffset",1) ) % 12    
-        h = local_hour * 5 + (klok.minute + 6)/12;
+        now = time.localtime()
+        hour = (now[3] + config.get("timeoffset",1) ) % 12    
+        h = hour * 5 + (now[4] + 6)/12;
         h = int (h % 60)
         neo.clearBuffer()
-        neo.setPixel(29,   self.stateColor)
-        neo.setPixel(31,   self.stateColor)
+        neo.setPixel(29,  self.stateColor)
+        neo.setPixel(31,  self.stateColor)
         neo.setPixel( 0,  self.qColor);
         neo.setPixel( 15, self.qColor);
         neo.setPixel( 30, self.qColor);
         neo.setPixel( 45, self.qColor);
-        neo.addPixel(klok.second,   self.sColor)
-        neo.addPixel(klok.minute,   self.mColor)
-        neo.addPixel(h,             self.hColor)
+        neo.addPixel(now[5] , self.sColor)
+        neo.addPixel(now[4], self.mColor)
+        neo.addPixel(h,       self.hColor)
         neo.writeBuffer() 
 
     def handleRainbow(self):

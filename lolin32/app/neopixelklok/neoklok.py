@@ -10,15 +10,13 @@ log  = logging.getlogger("neok")
 log.setLevel(logging.DEBUG)
 import config
 import ujson  as json
+from machine import RTC as rtc
+import time
 
 class Neoklok:
 
     def __init__(self):
         log.info("Constructor  Neoklok");
-        self.hour       = 0
-        self.minute     = 0
-        self.second     = 0
-        self.totalseconds = 0 
 
         self.zomertijdTabel = { # year: (march summertime, october wintertime)
             2016:(27, 30 ),
@@ -59,12 +57,10 @@ class Neoklok:
             }
 
     def sync(self,now):
-        self.hour    = now[3]
-        self.minute = now[4]
-        self.second = now[5]
         log.info("Syncing. " + self.toString() )
        
-    def checkSummerWinter(self,now):
+    def checkSummerWinter(self):
+        now = time.localtime()
         offset = 1
         year  = now[0]
         month = now[1]
@@ -91,37 +87,24 @@ class Neoklok:
             config.put("timeoffset",offset)
 
 
-    def nextSecond(self):
-        self.increment()
-
-       
-    def increment(self): 
-        self.totalseconds += 1 
-
-        self.second = self.second + 1
-        if self.second > 59:
-            self.second = 0
-            self.minute +=1
-            if self.minute > 59:
-                self.minute = 0
-                self.hour += 1
-                if self.hour > 23:
-                    self.hour = 0
-
     def loadJsonTime(self,jsonString):
         obj = json.loads(jsonString)
-        self.hour = obj.hour
-        self.minute = obj.minute
-        self.second = obj.second
+        hour = obj.hour
+        minute = obj.minute
+        second = obj.second
+        now = (2017,1,1,hour,minute,second,0,1)
+        rtc.datetime(now)
 
     def getJsonTime(self):
         """Return a json string reperesenting the time """
-        lhour = self.hour + config.get("timeoffset",1)
-        return '{"hour":%s,"minute":%s,"second":%s}\n' % (lhour,self.minute,self.second)
+        now = time.localtime()
+        lhour = now[3] + config.get("timeoffset",1)
+        return '{"hour":%s,"minute":%s,"second":%s}\n' % (lhour,now[4],now[5])
 
     def toString(self):
-        lhour = self.hour + config.get("timeoffset",1)
-        return "%2sh:%2sm:%2ss" % (lhour,self.minute,self.second)
+        now = time.localtime()
+        lhour = now[3] + config.get("timeoffset",1)
+        return "%2sh:%2sm:%2ss" % (lhour,now[4],now[5])
 
 
 klok = Neoklok()
