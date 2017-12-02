@@ -7,7 +7,7 @@
 import logging
 import utime as time
 import uselect as select 
-import machine
+import machine 
 import gc
 
 log = logging.getlogger("sche")

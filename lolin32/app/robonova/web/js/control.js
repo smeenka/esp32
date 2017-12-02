@@ -122,6 +122,21 @@ jQuery(document).ready(function() {
         var value = { id: newId, group:"R" }
         $.post('/servos/id',JSON.stringify(value) )
     });
+    jQuery('.button_off').on('click', function(e)  {
+        var value = { onoff:'0', group:$(this).attr('group') }
+        console.log('motors off for group :', value);
+        $.post('/servos/off',JSON.stringify(value) )
+    });
+    jQuery('.button_on').on('click', function(e)  {
+        var value = { onoff:'1', group:$(this).attr('group') }
+        console.log('motors on for group :', value);
+        $.post('/servos/off',JSON.stringify(value) )
+    });
+    jQuery('.button_exit').on('click', function(e)  {
+        var value = { onoff:'-1', group:$(this).attr('group') }
+        console.log('motors exit for group :', value);
+        $.post('/servos/off',JSON.stringify(value) )
+    });
 
 
     var getPositionL = function () {

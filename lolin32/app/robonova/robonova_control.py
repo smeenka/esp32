@@ -44,3 +44,21 @@ def servoTask():
             if s:
                 s.getPosition()
         yield 
+
+def servoTaskL():
+    yield
+    while True:
+        driverL.checkStream()            
+        for s in driverL.servos:
+            if s:
+                s.getPosition()
+        yield 
+
+def servoTaskR():
+    yield
+    while True:
+        driverR.checkStream()            
+        for s in driverR.servos:
+            if s:
+                s.getPosition()
+        yield 

@@ -57,3 +57,21 @@ def idle():
 
 def deepsleep():
 	log.debug("Switch power to deepsleep")
+
+class UART:
+    def __init__(self,port = 2):
+        log.info ("Constructor UART instance  %s ",port) 
+
+    def init(self, baud = 19200, inv = 1, bits=8, parity=None, stop=2): 
+        log.info("init")
+
+
+        
+    def read(self,buf):
+        log.debug("read")
+
+    def write(self, buf):
+        log.debug("write")
+        
+    def any(self):
+        return False

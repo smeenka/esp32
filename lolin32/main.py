@@ -10,7 +10,6 @@ import os
 import sys
 import time
 import machine  
-import wifi
  
 #sys.path.append("/lib")
 
@@ -27,25 +26,18 @@ def blink(n):
 
 #if machine.reset_cause() == machine.SOFT_RESET:
 #    print ("Soft reset, doing nothing")
+#    print('Connected!! network config:', wifi.wlan.ifconfig())
 
-if wifi.wlan.isconnected():
-    print ("Already connected,  doing nothing")
-else:
-    wifi.ap.active(False)
-    wifi.connect2ap()
-    while not wifi.wlan.isconnected():
-        blink(1)
- 
-print('Connected!! network config:', wifi.wlan.ifconfig())
-blink(5)
 
 try:
     print ("Starting application")
-    os.chdir("/test/lib")
-    #s.chdir('/test/asyncio')
-    import test
-    #os.chdir("/app/robonova")
-    #import robonova_async
+    #os.chdir("/test/lib")
+    #os.chdir('/test/asyncio')
+    #import test
+    #os.chdir("/app/rosserver")
+    os.chdir("/app/neopixelklok")
+    print ("Importing application")
+    import klok_asyncio
 
 except Exception as e:
     print ("Exception:",e)
@@ -53,6 +45,9 @@ except  KeyboardInterrupt:
     print ("KeyboardInterrupt")
    
 led.value(1)
+import wifi
+if not wifi.wlan.isconnected():
+    wifi.connect2ap()
 import uftpserver
 
 

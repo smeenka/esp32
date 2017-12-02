@@ -65,3 +65,44 @@ While receiving data the esp32 will transmit 2 zeros, effectivly creating a pull
 * see /app/robonova
 * status: work in progress, working, but not finished yet
 
+## Communication with ROS
+
+The app rosserver makes the robonova controlled by ROS
+
+rosserver does act as a server. On the PC (or the raspberry PI) a robonova ros driver should connect to the server.
+
+Information is transferred with an API based on low level frames.
+
+Command frame format:
+
+    byte 0: 'R'   # start of frame marker 1
+    byte 1: 'o'   # start of frame marker 2
+    byte 2: command
+    byte 3: size
+    byte 4: start of data array
+
+Most commands are async: no response is expected.
+Only command GET_STATUS is synchronous and waits for a response
+
+Response frame format:
+
+    byte 0: 'R'   # start of frame marker 1
+    byte 1: 'o'   # start of frame marker 2
+    byte 2: status:         0x10 = ROBONOVA_OK
+    byte 3: nr of motors
+    byte 4: voltage in mV high
+    byte 5: voltage in mV low
+    byte 4: amperage in mA high
+    byte 5: amperage in mA low
+    Byte 6: position array, 2 bytes per motor. Position in servo pulse lenght 500..2500 ms, 1500 is mid position
+
+
+Possible commands:
+
+    SET_POSITION 0x10      data array of unsigned short (2 bytes) contains position of servo (500 .. 2500). If a data field is zero, the position is not changed, no update.
+    SET_SPEED    0x20      data array of unsigned byte  (1 bytes) contains speed of servo (1 .. 255). I data field is zero, speed is not changed, no update
+    SET_TORQUE   0x30      data array of unsigned byte  (1 bytes) contains torque of servo (1 .. 3). I data field is zero, torque is not changed, no update
+    SET_OFF    0x40        No param. Remove power from the servos. Motors can be moved by hand 
+    SET_MOTORSTOP 0x50     Stop motors form moving but keep powered. 
+    GET_STATUS   0x80      only after command GET_STATUS the ROBONOVA will reply 
+

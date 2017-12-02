@@ -90,8 +90,8 @@ DATA_PORT = 1024
 sched = asyncio.sched
 sched.task(heap(),           name = "heap",     period = 10000)
 sched.task(wlanConnect(),    name = "wlan",     period = 1000, time2run = 500)
-sched.task(http.listen(port),name = "webServer")
-sched.task(robonova_control.servoTask(),name = "servos", period=500,time2run = 112)
+sched.task(http.listen(port),name = "webServer",prio= 5)
+sched.task(robonova_control.servoTask(),name = "servos", period=1000,time2run = 112,prio=20)
 
 sched.enablePolling(100) 
 sched.enableGC(100) 
